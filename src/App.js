@@ -1,8 +1,56 @@
-import React from 'react';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Header from "./components/Header.js";
+
+// Navbar component
 
 // App component
-const App = () => {
+function App() {
+  const [pokemonData, setPokemonData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://api.pokemontcg.io/v2/cards");
+        if (response.ok) {
+          const data = await response.json();
+          setPokemonData(data);
+        } else {
+          console.error("Error al obtener los datos");
+        }
+      } catch (error) {
+        console.error("Error en la solicitud:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <div>
+      <Header />
+      <h1>API de Pokémon</h1>
+      {pokemonData && (
+        <div>
+          {pokemonData.data.map((pokemon) => (
+            <div key={pokemon.id}>
+              <h2>{pokemon.name}</h2>
+              <img src={pokemon.images.small} alt={pokemon.name} />
+              <img src={pokemon.images.large} alt={pokemon.name} />
+              <img
+                class="w-28 h-20"
+                src={pokemon.set.images.logo}
+                alt={pokemon.name}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// App component
+/*const App = () => {
   return (
     <div className="app-container">
       <Navbar />
@@ -37,7 +85,7 @@ const CollectionSection = ({ title }) => {
       <div className="card-collection">
         {/* Placeholder for card logos /}
         <CardLogo title="PALDEAN FATES" code="MW/DD" percentage="45%" />
-        {/ Add more CardLogo components as needed */}
+        {/ Add more CardLogo components as needed * /}
       </div>
     </section>
   );
@@ -53,6 +101,6 @@ const CardLogo = ({ title, code, percentage }) => {
     </div>
     
   );
-};
+};*/
 
 export default App;
